@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Geofencing</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <string name="eng_enter_toast">you entered the geofence</string>
+    <string name="eng_exit_toast">you entered the geofence</string>
+    <string name="eng_enter_check_button">on enter</string>
+    <string name="eng_exit_check_button">on exit</string>
+    <string name="eng_gpsalarm_button">GPS Alarm</string>
+    <string name="eng_options_button">Options</string>
+    <string name="eng_alarm_button">Alarm</string>
+    <string name="eng_mode_button">Mode</string>
+
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="title_activity_general">GeneralActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+</resources>

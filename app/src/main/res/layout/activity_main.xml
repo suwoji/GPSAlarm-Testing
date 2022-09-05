@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E6E6"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/some_id"
+        android:layout_width="166dp"
+        android:layout_height="29dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="250dp"
+        android:fontFamily="@fonts/montserrat_semibold"
+        android:gravity="center_horizontal|top"
+        android:lineSpacingExtra="20dp"
+        android:text="Select mode"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#000000"
+        android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/startButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.002" />
+
+    <RelativeLayout
+        android:id="@+id/startButton"
+        android:layout_width="340dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/round_orange"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/some_id">
+
+        <TextView
+            android:id="@+id/gpsAlarmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+
+            android:layout_toEndOf="@+id/gpsAlarmImageView"
+            android:fontFamily="@fonts/montserrat_semibold"
+            android:text="@string/eng_gpsalarm_button"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/gpsAlarmImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:srcCompat="@drawable/gps_alarm_icon"
+            app:tint="#0000FF" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/modeButton"
+        android:layout_width="340dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/round_orange"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/AlarmButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/AlarmButton"
+        app:layout_constraintTop_toBottomOf="@+id/AlarmButton"
+        app:layout_constraintVertical_bias="0.018">
+
+        <TextView
+            android:id="@+id/modeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+
+            android:layout_toEndOf="@+id/modeDayImageView"
+            android:fontFamily="@fonts/montserrat_semibold"
+            android:text="@string/eng_mode_button"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/modeDayImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:srcCompat="@drawable/sun_icon"
+            app:tint="#0000FF" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/AlarmButton"
+        android:layout_width="340dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/round_orange"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/startButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/startButton"
+        app:layout_constraintTop_toBottomOf="@+id/startButton"><![CDATA[>
+
+        ]]>
+
+        <ImageView
+            android:id="@+id/alarmImageView"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:srcCompat="@drawable/alarm_icon"
+            app:tint="#0000FF" />
+
+        <TextView
+            android:id="@+id/alarmTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="23dp"
+            android:layout_alignParentTop="true"
+
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="16dp"
+            android:layout_toEndOf="@+id/alarmImageView"
+            android:fontFamily="@fonts/montserrat_semibold"
+            android:text="@string/eng_alarm_button"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
