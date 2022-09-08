@@ -17,6 +17,7 @@
     <string name="eng_options_button">Настройки</string>
     <string name="eng_alarm_button">Будильник</string>
     <string name="eng_mode_button">Режим</string>
+<!--    <string name="alarm_push">Будильник</string>-->
 
 
     <!-- Sync Preferences -->
