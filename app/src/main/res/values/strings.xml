@@ -17,6 +17,8 @@
     <string name="eng_options_button">Options</string>
     <string name="eng_alarm_button">Alarm</string>
     <string name="eng_mode_button">Mode</string>
+    <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
 
 
     <!-- Sync Preferences -->
