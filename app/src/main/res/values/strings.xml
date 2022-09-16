@@ -9,8 +9,9 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
 
-    <string name="eng_enter_toast">you entered the geofence</string>
-    <string name="eng_exit_toast">you entered the geofence</string>
+<!--     TODO: rename eng-->
+    <string name="enter_toast">you entered the geofence</string>
+    <string name="exit_toast">you entered the geofence</string>
     <string name="eng_enter_check_button">on enter</string>
     <string name="eng_exit_check_button">on exit</string>
     <string name="eng_gpsalarm_button">GPS Alarm</string>
@@ -19,6 +20,11 @@
     <string name="eng_mode_button">Mode</string>
     <string name="start_button">Start</string>
     <string name="stop_button">Stop</string>
+    <string name="no_permission_toast">Please provide location permission</string>
+    <string name="empty_checkbox_toast">Mode not selected</string>
+    <string name="empty_map_toast">Zone not selected</string>
+    <string name="map_disable_toast">Alarm enabled</string>
+    <string name="push_stop_button">Stop</string>
 
 
     <!-- Sync Preferences -->

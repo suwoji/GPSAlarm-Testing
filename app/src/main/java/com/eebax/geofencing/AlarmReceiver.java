@@ -29,8 +29,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                         .setOngoing(false)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true);
-                Intent i = new Intent(context, MapsActivity.class);
-                PendingIntent pendingIntent =
+                    Intent i = new Intent(context, MapsActivity.class);
+                    PendingIntent pendingIntent =
                         PendingIntent.getActivity(
                                 context,
                                 0,

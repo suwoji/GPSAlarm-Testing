@@ -40,16 +40,16 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                Toast.makeText(context, "VHOD V GEOZONU", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("VHOD", "", MapsActivity.class);
+//                Toast.makeText(context, String.valueOf(R.string.enter_toast), Toast.LENGTH_SHORT).show();
+                notificationHelper.sendHighPriorityNotification(String.valueOf(R.string.enter_toast), "", MapsActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
                 Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
                 notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_DWELL", "", MapsActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                Toast.makeText(context, "VIHOD IZ GEOZONI", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("VIHOD", "", MapsActivity.class);
+//                Toast.makeText(context, String.valueOf(R.string.exit_toast), Toast.LENGTH_SHORT).show();
+                notificationHelper.sendHighPriorityNotification(String.valueOf(R.string.exit_toast), "", MapsActivity.class);
                 break;
         }
 

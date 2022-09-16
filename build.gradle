@@ -11,7 +11,14 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+plugins {
+    id "com.bugfender.upload-mapping" version "1.0.2"
+}
 
+bugfender {
+    symbolicationToken "9Mc7gSVBXt-ec0376da0ee3480cad332c39626a4e48"
+
+}
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

@@ -9,8 +9,8 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
 
-    <string name="eng_enter_toast">вы вошли в геозону</string>
-    <string name="eng_exit_toast">вы вышли из геозоны</string>
+    <string name="enter_toast">Вы вошли в геозону</string>
+    <string name="exit_toast">Вы вышли из геозоны</string>
     <string name="eng_enter_check_button">при входе</string>
     <string name="eng_exit_check_button">при выходе</string>
     <string name="eng_gpsalarm_button">GPS Будильник</string>
@@ -19,7 +19,11 @@
     <string name="eng_mode_button">Режим</string>
     <string name="start_button">Старт</string>
     <string name="stop_button">Стоп</string>
-<!--    <string name="alarm_push">Будильник</string>-->
+    <string name="no_permission_toast">Необходим доступ к местоположению</string>
+    <string name="empty_checkbox_toast">Не выбран режим</string>
+    <string name="empty_map_toast">Не выбрана зона</string>
+    <string name="map_disable_toast">Будильник уже включен</string>
+    <string name="push_stop_button">Стоп</string>
 
 
     <!-- Sync Preferences -->
