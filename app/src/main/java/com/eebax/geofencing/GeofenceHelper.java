@@ -15,6 +15,7 @@ public class GeofenceHelper extends ContextWrapper {
 
     private static final String TAG = "GeofenceHelper";
     PendingIntent pendingIntent;
+    private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
 
     public GeofenceHelper(Context base) {
         super(base);
@@ -25,14 +26,19 @@ public class GeofenceHelper extends ContextWrapper {
         return new GeofencingRequest.Builder().addGeofence(geofence).setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER).build();
     }
 
-    public Geofence getGeofence(String ID, LatLng latLng, float radius, int transitionTypes){
+    public Geofence getGeofence(LatLng latLng, float radius, int transitionTypes){
 
-        return new Geofence.Builder().setCircularRegion(latLng.latitude, latLng.longitude, radius).setRequestId(ID).setTransitionTypes(transitionTypes).setLoiteringDelay(5000).setExpirationDuration(Geofence.NEVER_EXPIRE).build();
+        return new Geofence.Builder()
+                .setCircularRegion(latLng.latitude, latLng.longitude, radius)
+                .setRequestId(GEOFENCE_ID)
+                .setTransitionTypes(transitionTypes)
+                .setLoiteringDelay(5000)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE).build();
     }
 
     public PendingIntent getPendingIntent() {
 
-        if (pendingIntent != null){
+        if (pendingIntent != null) {
             return pendingIntent;
         }
 

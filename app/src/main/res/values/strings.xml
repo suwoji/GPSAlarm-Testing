@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Geofencing</string>
+    <string name="app_name">GPS Alarm</string>
     <string name="title_activity_maps">MapsActivity</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -14,7 +14,7 @@
     <string name="exit_toast">you entered the geofence</string>
     <string name="eng_enter_check_button">on enter</string>
     <string name="eng_exit_check_button">on exit</string>
-    <string name="eng_gpsalarm_button">GPS Alarm</string>
+    <string name="gpsalarm_button">GPS Alarm</string>
     <string name="eng_options_button">Options</string>
     <string name="eng_alarm_button">Alarm</string>
     <string name="eng_mode_button">Mode</string>

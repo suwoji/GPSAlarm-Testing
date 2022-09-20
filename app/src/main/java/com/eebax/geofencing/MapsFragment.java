@@ -1,41 +1,32 @@
 package com.eebax.geofencing;
 
-import static android.content.ContentValues.TAG;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bugfender.sdk.Bugfender;
-import com.eebax.geofencing.databinding.ActivityMapsBinding;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
@@ -48,31 +39,62 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 enum AlarmMode {
     ENABLED,
-    DISABLED
+    DISABLED;
+
+    public int startButtonName(){
+        switch (this){
+            case ENABLED: return R.string.stop_button;
+            case DISABLED: return R.string.start_button;
+            default: return 0;
+        }
+    }
+
+    public int startButtonColor(){
+        switch (this){
+            case ENABLED: return R.color.design_default_color_error;
+            case DISABLED: return R.color.design_default_color_primary_dark;
+            default: return R.color.black;
+        }
+    }
 }
 
 public class MapsFragment extends Fragment {
     private static final Object MODE_PRIVATE = "geofence_key";
-    GoogleMap mMap;
-    private ActivityMapsBinding binding;
-    Button button;
-    LatLng selectedCoord = null;
-    AlarmMode alarmMode = AlarmMode.DISABLED;
-    private LatLng currentLatLng;
+    private GoogleMap mMap;
+    private LatLng selectedCoord = null;
+    private AlarmMode alarmMode = AlarmMode.DISABLED;
     private float GEOFENCE_RADIUS = 200;
-    private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
-    CheckBox enterCheck, exitCheck;
-    Button startStopButton;
-    GeofencingClient geofencingClient;
+    private float CIRCLE_RADIUS = 200;
+    private CheckBox enterCheck, exitCheck;
+    private RelativeLayout settingsView;
+    private AppCompatButton startStopButton;
+    private GeofencingClient geofencingClient;
     private GeofenceHelper geofenceHelper;
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
+    private boolean isMapLoaded = false;
+
+    private void setAlarmMode(AlarmMode alarmMode) {
+        this.alarmMode = alarmMode;
+
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("geofence_pref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("alarm_enabled", alarmMode == AlarmMode.ENABLED);
+//        boolean test = (alarmMode == AlarmMode.ENABLED);
+//        editor.putBoolean("alarm_enabled", (alarmMode == AlarmMode.ENABLED) ? true : false);
+    }
+
+    private void setSelectedCoord(LatLng selectedCoord) {
+        this.selectedCoord = selectedCoord;
+
+        refreshViews();
+    }
+
 
     @Nullable
     @Override
@@ -85,30 +107,36 @@ public class MapsFragment extends Fragment {
 
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("geofence_pref", Context.MODE_PRIVATE);
 
-        startStopButton = (Button) view.findViewById(R.id.startStopButton);
+        startStopButton = (AppCompatButton) view.findViewById(R.id.startStopButton);
         enterCheck = (CheckBox) view.findViewById(R.id.enterCheckBoxMain);
         exitCheck = (CheckBox) view.findViewById(R.id.exitCheckBoxMain);
+        settingsView = (RelativeLayout) view.findViewById(R.id.modeButton);
         enterCheck.setChecked(sharedPreferences.getBoolean("enter_checkBox", false));
         exitCheck.setChecked(sharedPreferences.getBoolean("exit_checkBox", false));
+        double lat, lon;
 
-//        final View mapView = getFragmentManager().findFragmentById(R.id.map).getView();
+        setAlarmMode(sharedPreferences.getBoolean("alarm_enabled", false) ? AlarmMode.ENABLED : AlarmMode.DISABLED);
+        lat = sharedPreferences.getFloat("position_lat", 15f);
+        lon = sharedPreferences.getFloat("position_lon", 15f);
+        if (lat != 15f && lon != 15f) {
+            setSelectedCoord(new LatLng(lat, lon));
+        }
 
         SupportMapFragment supportMapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-
+                isMapLoaded = true;
                 geofencingClient = LocationServices.getGeofencingClient(getActivity());
                 geofenceHelper = new GeofenceHelper(getActivity());
 
                 float zoomLevel = 15.0f;
 
-
                 Bugfender.init(getContext(), "n34zQbmQYSpei2VhZhOOpVylyXegDYHN", BuildConfig.DEBUG);
                 Bugfender.enableCrashReporting();
                 Bugfender.enableUIEventLogging(getActivity().getApplication());
-                Bugfender.enableLogcatLogging(); // optional, if you want logs automatically collected from logcat
+                Bugfender.enableLogcatLogging();
 
                 mMap = googleMap;
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -132,14 +160,10 @@ public class MapsFragment extends Fragment {
                     Bugfender.d("log", "Camera move");
                 }
 
-                double lat, lon;
-                if(sharedPreferences.getFloat("position_lat", 15f) != 15f) {
-                    lat = sharedPreferences.getFloat("position_lat", 15f);
-                    lon = sharedPreferences.getFloat("position_lon", 15f);
-                    handleMapLongClick(new LatLng(lat, lon));
-                    alarmMode = AlarmMode.ENABLED;
-                    refreshMapState();
-                    Bugfender.d("log", "Alarm mode check");
+                refreshViews();
+
+                if (alarmMode == AlarmMode.ENABLED && selectedCoord != null ) {
+                    resubscribeToGeofence(selectedCoord, CIRCLE_RADIUS);
                 }
 
                 mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
@@ -148,16 +172,13 @@ public class MapsFragment extends Fragment {
                         if (alarmMode == AlarmMode.DISABLED){
                             Util.log("Map click");
                             Bugfender.d("log", "Map click(Alarm ENABLED)");
-                            selectedCoord = latLng;
-//                            TODO
-//                            For old sdk we dont need permission
+                            setSelectedCoord(latLng);
+
                             if (Build.VERSION.SDK_INT < 29) {
-                                handleMapLongClick(latLng);
                                 return;
                             }
 
                             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                handleMapLongClick(latLng);
                                 Bugfender.d("log", "Background location permission SUCCESS");
                             } else {
                                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
@@ -188,11 +209,12 @@ public class MapsFragment extends Fragment {
                     case R.id.startStopButton: {
                         switch (alarmMode) {
                             case ENABLED:
-                                alarmMode = AlarmMode.DISABLED;
+                                setAlarmMode(AlarmMode.DISABLED);
                                 editor.putFloat("position_lat", 15f);
                                 editor.putFloat("position_lon", 15f);
                                 editor.putBoolean("enter_checkBox", false);
                                 editor.putBoolean("exit_checkBox", false);
+                                mMap.clear();
                                 Util.log("startStopButton disabled");
                                 Bugfender.d("log", "startStopButton disabled");
                                 break;
@@ -204,8 +226,8 @@ public class MapsFragment extends Fragment {
                                     if (!exitCheck.isChecked() && !enterCheck.isChecked()) {
                                         Toast.makeText(getContext(),R.string.empty_checkbox_toast, Toast.LENGTH_SHORT).show();
                                     } else {
-                                        alarmMode = AlarmMode.ENABLED;
-                                        addGeofence(selectedCoord, GEOFENCE_RADIUS);
+                                        setAlarmMode(AlarmMode.ENABLED);
+                                        resubscribeToGeofence(selectedCoord, CIRCLE_RADIUS);
                                         editor.putFloat("position_lat", (float) selectedCoord.latitude );
                                         editor.putFloat("position_lon", (float) selectedCoord.longitude);
                                         editor.putBoolean("enter_checkBox", enterCheck.isChecked());
@@ -224,7 +246,7 @@ public class MapsFragment extends Fragment {
                                     Toast.makeText(getContext(),R.string.empty_map_toast, Toast.LENGTH_SHORT).show();
                                 break;
                         }
-                        refreshMapState();
+                        refreshViews();
                     }
                 }
             }
@@ -233,24 +255,37 @@ public class MapsFragment extends Fragment {
         return view;
     }
 
+    private void redrawMapCircle() {
+        mMap.clear();
+        if (selectedCoord != null) {
+            addCircle(selectedCoord, GEOFENCE_RADIUS);
+        }
+    }
+
     @SuppressLint("ResourceAsColor")
-    private void refreshMapState() {
+    private void refreshViews() {
+        if (!isMapLoaded) return;
+
+        redrawMapCircle();
+
         switch (alarmMode) {
             case ENABLED:
                 Bugfender.d("log", "refreshMapState (ENABLED)");
                 enterCheck.setClickable(false);
                 exitCheck.setClickable(false);
-                startStopButton.setBackgroundColor(R.color.design_default_color_error);
-                startStopButton.setText(R.string.stop_button);
+                settingsView.setAlpha(0.6f);
                 break;
 
             case DISABLED:
                 Bugfender.d("log", "refreshMapState (DISABLED)");
                 enterCheck.setClickable(true);
                 exitCheck.setClickable(true);
-                startStopButton.setBackgroundColor(R.color.design_default_color_primary_dark);
-                startStopButton.setText(R.string.start_button);
+                settingsView.setAlpha(1f);
                 break;
+        }
+        startStopButton.setText(getContext().getString(alarmMode.startButtonName()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startStopButton.setBackgroundColor(getContext().getColor(alarmMode.startButtonColor()));
         }
     }
 
@@ -268,13 +303,7 @@ public class MapsFragment extends Fragment {
         }
     }
 
-
-    private void handleMapLongClick(LatLng latLng) {
-        mMap.clear();
-        addCircle(latLng, GEOFENCE_RADIUS);
-    }
-
-    private void addGeofence(LatLng latLng, float radius) {
+    private void resubscribeToGeofence(LatLng latLng, float radius) {
         Geofence geofence = null;
 //        if (enterCheck.isChecked()) {
 //            if (exitCheck.isChecked()) {
@@ -291,13 +320,13 @@ public class MapsFragment extends Fragment {
 //        }
 
         if (enterCheck.isChecked() && exitCheck.isChecked()) {
-            geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
+            geofence = geofenceHelper.getGeofence(latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
             Bugfender.d("log", "adding geofence (both checkbox)");
         } else if (enterCheck.isChecked() && !exitCheck.isChecked()) {
-            geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER);
+            geofence = geofenceHelper.getGeofence(latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER);
             Bugfender.d("log", "adding geofence (on enter checkbox)");
         } else if (!enterCheck.isChecked() && exitCheck.isChecked()) {
-            geofence = geofenceHelper.getGeofence(GEOFENCE_ID, latLng, radius, Geofence.GEOFENCE_TRANSITION_EXIT);
+            geofence = geofenceHelper.getGeofence(latLng, radius, Geofence.GEOFENCE_TRANSITION_EXIT);
             Bugfender.d("log", "adding geofence (on exit checkbox)");
         } else {
             Toast.makeText(getContext(), R.string.empty_checkbox_toast, Toast.LENGTH_SHORT).show();

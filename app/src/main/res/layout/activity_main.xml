@@ -51,7 +51,7 @@
 
             android:layout_toEndOf="@+id/gpsAlarmImageView"
             android:fontFamily="@fonts/montserrat_semibold"
-            android:text="@string/eng_gpsalarm_button"
+            android:text="@string/gpsalarm_button"
             android:textColor="#000000"
             android:textSize="18sp" />
 

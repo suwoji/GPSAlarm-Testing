@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -49,19 +50,56 @@ public class NotificationHelper extends ContextWrapper {
 
         Intent intent = new Intent(this, activityName);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(body))
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .addAction(R.drawable.alarm_icon, String.valueOf(R.string.push_stop_button), pendingIntent)
-                .build();
+        Uri uri = Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/"+R.raw.alarm_sound);
+//        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setContentTitle(title)
+//                .setContentText(body)
+//                .setSmallIcon(R.drawable.ic_launcher_background)
+//                .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                .setStyle(new NotificationCompat.BigTextStyle().setBigContentTitle(title).bigText(body))
+//                .setContentIntent(pendingIntent)
+//                .setAutoCancel(true)
+//                .setSound(uri)
+//                .addAction(R.drawable.alarm_icon, String.valueOf(R.string.push_stop_button), pendingIntent)
+//                .build();
         long when = System.currentTimeMillis() + 60000L;
-        NotificationManagerCompat.from(this).notify(new Random().nextInt(), notification);
+
+//        NotificationManagerCompat.from(this).notify(new Random().nextInt(), notification);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "CH_ID")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .addAction(R.drawable.alarm_icon, body, pendingIntent)
+                .setAutoCancel(true)
+                .setSound(uri)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+            if(uri != null){
+                // Changing Default mode of notification
+                notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+                // Creating an Audio Attribute
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .build();
+
+                // Creating Channel
+                NotificationChannel notificationChannel = new NotificationChannel("CH_ID","Testing_Audio",NotificationManager.IMPORTANCE_HIGH);
+                notificationChannel.setSound(uri,audioAttributes);
+                mNotificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+        mNotificationManager.notify(0, notificationBuilder.build());
+
+
+//        notification.sound =Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/"+R.raw.alarm_sound);//Here is FILE_NAME is the name of file that you want to play
+//        // Vibrate if vibrate is enabled
+//        notification.defaults |= Notification.DEFAULT_VIBRATE;
+//        notificationManager.notify(0, notification);
 
 //        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 //        Intent intent = new Intent(this, AlarmReceiver.class);

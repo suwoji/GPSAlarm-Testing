@@ -41,18 +41,17 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
 //                Toast.makeText(context, String.valueOf(R.string.enter_toast), Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification(String.valueOf(R.string.enter_toast), "", MapsActivity.class);
+                notificationHelper.sendHighPriorityNotification(context.getString(R.string.enter_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
                 Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_DWELL", "", MapsActivity.class);
+                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_DWELL", "", GeneralActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
 //                Toast.makeText(context, String.valueOf(R.string.exit_toast), Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification(String.valueOf(R.string.exit_toast), "", MapsActivity.class);
+                notificationHelper.sendHighPriorityNotification(context.getString(R.string.exit_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
                 break;
         }
-
 
     }
 }

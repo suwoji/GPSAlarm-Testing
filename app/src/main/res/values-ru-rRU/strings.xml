@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Geofencing</string>
-    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title_activity_maps">Гео-Будильник</string>
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -13,7 +13,7 @@
     <string name="exit_toast">Вы вышли из геозоны</string>
     <string name="eng_enter_check_button">при входе</string>
     <string name="eng_exit_check_button">при выходе</string>
-    <string name="eng_gpsalarm_button">GPS Будильник</string>
+    <string name="gpsalarm_button">GPS Будильник</string>
     <string name="eng_options_button">Настройки</string>
     <string name="eng_alarm_button">Будильник</string>
     <string name="eng_mode_button">Режим</string>
