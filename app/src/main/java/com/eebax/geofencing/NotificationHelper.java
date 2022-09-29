@@ -94,21 +94,5 @@ public class NotificationHelper extends ContextWrapper {
             }
         }
         mNotificationManager.notify(0, notificationBuilder.build());
-
-
-//        notification.sound =Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/"+R.raw.alarm_sound);//Here is FILE_NAME is the name of file that you want to play
-//        // Vibrate if vibrate is enabled
-//        notification.defaults |= Notification.DEFAULT_VIBRATE;
-//        notificationManager.notify(0, notification);
-
-//        AlarmManager am = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-//        intent.putExtra("myAction", "mDoNotify");
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-//        am.set(AlarmManager.RTC_WAKEUP, when, pendingIntent);
-
-//        notification.sound = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.alarm_sound);
-//        NotificationManagerCompat.from(this).notify(new Random().nextInt(), notification);
     }
-
 }

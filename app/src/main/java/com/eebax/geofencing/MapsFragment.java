@@ -41,35 +41,52 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.SphericalUtil;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 enum AlarmMode {
     ENABLED,
     DISABLED;
 
-    public int startButtonName(){
-        switch (this){
-            case ENABLED: return R.string.stop_button;
-            case DISABLED: return R.string.start_button;
-            default: return 0;
+    public int startButtonName() {
+        switch (this) {
+            case ENABLED:
+                return R.string.stop_button;
+            case DISABLED:
+                return R.string.start_button;
+            default:
+                return 0;
         }
     }
 
-    public int startButtonColor(){
-        switch (this){
-            case ENABLED: return R.color.design_default_color_error;
-            case DISABLED: return R.color.design_default_color_primary_dark;
-            default: return R.color.black;
+    public int startButtonColor() {
+        switch (this) {
+            case ENABLED:
+                return com.google.android.material.R.color.androidx_core_ripple_material_light;
+            case DISABLED:
+                return com.google.android.material.R.color.material_slider_active_tick_marks_color;
+            default:
+                return R.color.black;
         }
     }
 }
+
+enum MapCameraMode {
+    LOCK,
+    FREE,
+    LOCK_TIMER_MOVE;
+}
+
 
 public class MapsFragment extends Fragment {
     private static final Object MODE_PRIVATE = "geofence_key";
     private GoogleMap mMap;
     private LatLng selectedCoord = null;
     private AlarmMode alarmMode = AlarmMode.DISABLED;
+    private MapCameraMode mapCameraMode = MapCameraMode.FREE;
     private float GEOFENCE_RADIUS = 200;
-    private float CIRCLE_RADIUS = 200;
     private CheckBox enterCheck, exitCheck;
     private RelativeLayout settingsView;
     private AppCompatButton startStopButton;
@@ -78,9 +95,22 @@ public class MapsFragment extends Fragment {
     private int FINE_LOCATION_ACCESS_REQUEST_CODE = 10001;
     private int BACKGROUND_LOCATION_ACCESS_REQUEST_CODE = 10002;
     private boolean isMapLoaded = false;
+    Timer mTimer;
+    mTimerTask mTimerTask;
 
     private void setAlarmMode(AlarmMode alarmMode) {
         this.alarmMode = alarmMode;
+
+        switch (alarmMode) {
+            case ENABLED:
+                mapCameraMode = MapCameraMode.LOCK;
+                refreshLockCameraIfNeeded();
+                break;
+            case DISABLED:
+                cancelTimer();
+                mapCameraMode = MapCameraMode.FREE;
+                break;
+        }
 
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences("geofence_pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -89,9 +119,11 @@ public class MapsFragment extends Fragment {
 //        editor.putBoolean("alarm_enabled", (alarmMode == AlarmMode.ENABLED) ? true : false);
     }
 
+
+
     private void setSelectedCoord(LatLng selectedCoord) {
         this.selectedCoord = selectedCoord;
-
+        refreshLockCameraIfNeeded();
         refreshViews();
     }
 
@@ -139,6 +171,7 @@ public class MapsFragment extends Fragment {
                 Bugfender.enableLogcatLogging();
 
                 mMap = googleMap;
+                enableUserLocation();
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
@@ -162,14 +195,14 @@ public class MapsFragment extends Fragment {
 
                 refreshViews();
 
-                if (alarmMode == AlarmMode.ENABLED && selectedCoord != null ) {
-                    resubscribeToGeofence(selectedCoord, CIRCLE_RADIUS);
+                if (alarmMode == AlarmMode.ENABLED && selectedCoord != null) {
+                    resubscribeToGeofence(selectedCoord, GEOFENCE_RADIUS);
                 }
 
                 mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                     @Override
                     public void onMapLongClick(@NonNull LatLng latLng) {
-                        if (alarmMode == AlarmMode.DISABLED){
+                        if (alarmMode == AlarmMode.DISABLED) {
                             Util.log("Map click");
                             Bugfender.d("log", "Map click(Alarm ENABLED)");
                             setSelectedCoord(latLng);
@@ -197,11 +230,29 @@ public class MapsFragment extends Fragment {
                         }
                     }
                 });
+                mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+                    @Override
+                    public void onCameraMove() {
+                        if (mapCameraMode == MapCameraMode.LOCK || mapCameraMode == MapCameraMode.LOCK_TIMER_MOVE) {
+                            mapCameraMode = MapCameraMode.LOCK_TIMER_MOVE;
+                            restartMapCameraTimer();
+                        }
+                    }
+                });
+                mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                    @Override
+                    public void onMyLocationChange(@NonNull Location location) {
+                        refreshLockCameraIfNeeded();
+                    }
+                });
             }
         });
 
+
+
         startStopButton.setOnClickListener(new View.OnClickListener() {
             SharedPreferences.Editor editor = sharedPreferences.edit();
+
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
@@ -224,26 +275,18 @@ public class MapsFragment extends Fragment {
                                 Bugfender.d("log", "startStopButton enabled");
                                 if (selectedCoord != null) {
                                     if (!exitCheck.isChecked() && !enterCheck.isChecked()) {
-                                        Toast.makeText(getContext(),R.string.empty_checkbox_toast, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), R.string.empty_checkbox_toast, Toast.LENGTH_SHORT).show();
                                     } else {
                                         setAlarmMode(AlarmMode.ENABLED);
-                                        resubscribeToGeofence(selectedCoord, CIRCLE_RADIUS);
-                                        editor.putFloat("position_lat", (float) selectedCoord.latitude );
+                                        resubscribeToGeofence(selectedCoord, GEOFENCE_RADIUS);
+                                        editor.putFloat("position_lat", (float) selectedCoord.latitude);
                                         editor.putFloat("position_lon", (float) selectedCoord.longitude);
                                         editor.putBoolean("enter_checkBox", enterCheck.isChecked());
                                         editor.putBoolean("exit_checkBox", exitCheck.isChecked());
                                         editor.commit();
-                                        Location myLocation = mMap.getMyLocation();
-                                        LatLng myLatLng = new LatLng(myLocation.getLatitude(),
-                                                myLocation.getLongitude());
-                                                    LatLngBounds.Builder bld = new LatLngBounds.Builder();
-                                                    bld.include(selectedCoord);
-                                                    bld.include(myLatLng);
-                                                    LatLngBounds bounds = bld.build();
-                                                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 70));
                                     }
                                 } else
-                                    Toast.makeText(getContext(),R.string.empty_map_toast, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.empty_map_toast, Toast.LENGTH_SHORT).show();
                                 break;
                         }
                         refreshViews();
@@ -253,6 +296,50 @@ public class MapsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void refreshLockCameraIfNeeded(){
+        if(mapCameraMode != MapCameraMode.LOCK) return;
+
+        LatLngBounds.Builder bld = new LatLngBounds.Builder();
+        LatLng w = SphericalUtil.computeOffset(selectedCoord, GEOFENCE_RADIUS, 90);
+        LatLng e = SphericalUtil.computeOffset(selectedCoord, GEOFENCE_RADIUS, 270);
+        LatLng n = SphericalUtil.computeOffset(selectedCoord, GEOFENCE_RADIUS, 0);
+        LatLng s = SphericalUtil.computeOffset(selectedCoord, GEOFENCE_RADIUS, 180);
+        bld.include(n);
+        bld.include(s);
+        bld.include(e);
+        bld.include(w);
+        Location myLocation = mMap.getMyLocation();
+        bld.include(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bld.build(), 70));
+    }
+
+
+    private void restartMapCameraTimer() {
+        mTimerTask = new mTimerTask();
+        cancelTimer();
+        mTimer = new Timer();
+        mTimer.schedule(mTimerTask, 5000);
+    }
+
+    private void cancelTimer() {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+    }
+
+    class mTimerTask extends TimerTask {
+        @Override
+        public void run() {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mapCameraMode = MapCameraMode.LOCK;
+                    refreshLockCameraIfNeeded();
+                }
+            });
+        }
     }
 
     private void redrawMapCircle() {
