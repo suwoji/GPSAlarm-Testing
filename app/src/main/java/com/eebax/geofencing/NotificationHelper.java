@@ -50,7 +50,7 @@ public class NotificationHelper extends ContextWrapper {
 
         Intent intent = new Intent(this, activityName);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 267, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Uri uri = Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/"+R.raw.alarm_sound);
+        Uri uri = Uri.parse("android.resource://"+getApplicationContext().getPackageName()+"/"+R.raw.geo_alarm);
 //        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
 //                .setContentTitle(title)
 //                .setContentText(body)

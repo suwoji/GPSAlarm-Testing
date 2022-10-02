@@ -24,8 +24,8 @@
 <!--    </RelativeLayout>-->
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:theme="@style/Theme.Geofencing.AppBarOverlay"

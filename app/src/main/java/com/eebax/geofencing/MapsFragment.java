@@ -361,7 +361,7 @@ public class MapsFragment extends Fragment {
                 enterCheck.setClickable(false);
                 exitCheck.setClickable(false);
                 settingsView.setVisibility(View.INVISIBLE);
-                startStopButton.setAlpha(0.6f);
+//                startStopButton.setAlpha(0.6f);
                 break;
 
             case DISABLED:
@@ -369,7 +369,7 @@ public class MapsFragment extends Fragment {
                 enterCheck.setClickable(true);
                 exitCheck.setClickable(true);
                 settingsView.setVisibility(View.VISIBLE);
-                startStopButton.setAlpha(1f);
+//                startStopButton.setAlpha(1f);
                 break;
         }
         startStopButton.setText(getContext().getString(alarmMode.startButtonName()));
