@@ -178,7 +178,7 @@ public class MapsFragment extends Fragment {
                 mMap.setMyLocationEnabled(true);
                 LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
                 Criteria criteria = new Criteria();
-
+                mMap.setPadding(70,70,70,200);
                 Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
                 if (location != null) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
@@ -360,14 +360,16 @@ public class MapsFragment extends Fragment {
                 Bugfender.d("log", "refreshMapState (ENABLED)");
                 enterCheck.setClickable(false);
                 exitCheck.setClickable(false);
-                settingsView.setAlpha(0.6f);
+                settingsView.setVisibility(View.INVISIBLE);
+                startStopButton.setAlpha(0.6f);
                 break;
 
             case DISABLED:
                 Bugfender.d("log", "refreshMapState (DISABLED)");
                 enterCheck.setClickable(true);
                 exitCheck.setClickable(true);
-                settingsView.setAlpha(1f);
+                settingsView.setVisibility(View.VISIBLE);
+                startStopButton.setAlpha(1f);
                 break;
         }
         startStopButton.setText(getContext().getString(alarmMode.startButtonName()));
