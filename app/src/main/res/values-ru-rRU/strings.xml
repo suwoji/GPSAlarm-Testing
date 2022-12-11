@@ -10,6 +10,7 @@
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
 
+    <string name="arrive_toast">Вы прибыли!</string>
     <string name="enter_toast">Вы вошли в геозону</string>
     <string name="exit_toast">Вы вышли из геозоны</string>
     <string name="eng_enter_check_button">при входе</string>

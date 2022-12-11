@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class GeofenceHelper extends ContextWrapper {
 
     private static final String TAG = "GeofenceHelper";
-    PendingIntent pendingIntent;
+        PendingIntent pendingIntent;
     private String GEOFENCE_ID = "SOME_GEOFENCE_ID";
 
     public GeofenceHelper(Context base) {
@@ -33,7 +33,8 @@ public class GeofenceHelper extends ContextWrapper {
                 .setRequestId(GEOFENCE_ID)
                 .setTransitionTypes(transitionTypes)
                 .setLoiteringDelay(5000)
-                .setExpirationDuration(Geofence.NEVER_EXPIRE).build();
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .build();
     }
 
     public PendingIntent getPendingIntent() {
@@ -43,7 +44,11 @@ public class GeofenceHelper extends ContextWrapper {
         }
 
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 2607, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(
+                this,
+                2607,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         return pendingIntent;
     }

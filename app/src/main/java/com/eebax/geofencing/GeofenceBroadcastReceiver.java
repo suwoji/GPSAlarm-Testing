@@ -32,26 +32,25 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
 
         List<Geofence> geofenceList = geofencingEvent.getTriggeringGeofences();
-        for (Geofence geofence: geofenceList) {
-            Log.d(TAG, "onReceive: " + geofence.getRequestId());
-        }
+//        for (Geofence geofence: geofenceList) {
+//            Log.d(TAG, "onReceive: " + geofence.getRequestId());
+//        }
 //        Location location = geofencingEvent.getTriggeringLocation();
-        int transitionType = geofencingEvent.getGeofenceTransition();
+//        int transitionType = geofencingEvent.getGeofenceTransition();
+//
+//        switch (transitionType) {
+//            case Geofence.GEOFENCE_TRANSITION_ENTER:
+//                notificationHelper.sendHighPriorityNotification(context.getString(R.string.enter_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
+//                break;
+//            case Geofence.GEOFENCE_TRANSITION_DWELL:
+//                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_DWELL", "", GeneralActivity.class);
+//                break;
+//            case Geofence.GEOFENCE_TRANSITION_EXIT:
+//                notificationHelper.sendHighPriorityNotification(context.getString(R.string.exit_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
+//                break;
+//        }
+        notificationHelper.sendHighPriorityNotification(context.getString(R.string.arrive_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
 
-        switch (transitionType) {
-            case Geofence.GEOFENCE_TRANSITION_ENTER:
-//                Toast.makeText(context, String.valueOf(R.string.enter_toast), Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification(context.getString(R.string.enter_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
-                break;
-            case Geofence.GEOFENCE_TRANSITION_DWELL:
-                Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_DWELL", "", GeneralActivity.class);
-                break;
-            case Geofence.GEOFENCE_TRANSITION_EXIT:
-//                Toast.makeText(context, String.valueOf(R.string.exit_toast), Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification(context.getString(R.string.exit_toast), context.getString(R.string.push_stop_button), GeneralActivity.class);
-                break;
-        }
 
     }
 }

@@ -1,5 +1,6 @@
 package com.eebax.geofencing.ui.gallery;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.eebax.geofencing.GeneralActivity;
 import com.eebax.geofencing.databinding.FragmentGalleryBinding;
 
 public class GalleryFragment extends Fragment {
 
     private FragmentGalleryBinding binding;
-
+    Dialog dialog;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         GalleryViewModel galleryViewModel =
