@@ -26,7 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.bugfender.sdk.Bugfender;
+//import com.bugfender.sdk.Bugfender;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
@@ -165,10 +165,10 @@ public class MapsFragment extends Fragment {
 
                 float zoomLevel = 15.0f;
 
-                Bugfender.init(getContext(), "n34zQbmQYSpei2VhZhOOpVylyXegDYHN", BuildConfig.DEBUG);
-                Bugfender.enableCrashReporting();
-                Bugfender.enableUIEventLogging(getActivity().getApplication());
-                Bugfender.enableLogcatLogging();
+//                Bugfender.init(getContext(), "n34zQbmQYSpei2VhZhOOpVylyXegDYHN", BuildConfig.DEBUG);
+//                Bugfender.enableCrashReporting();
+//                Bugfender.enableUIEventLogging(getActivity().getApplication());
+//                Bugfender.enableLogcatLogging();
 
                 mMap = googleMap;
                 enableUserLocation();
@@ -190,7 +190,7 @@ public class MapsFragment extends Fragment {
                             //   .tilt(40)                   // Sets the tilt of the camera to 30 degrees
                             .build();                   // Creates a CameraPosition from the builder
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    Bugfender.d("log", "Camera move");
+//                    Bugfender.d("log", "Camera move");
                 }
 
                 refreshViews();
@@ -204,7 +204,7 @@ public class MapsFragment extends Fragment {
                     public void onMapLongClick(@NonNull LatLng latLng) {
                         if (alarmMode == AlarmMode.DISABLED) {
                             Util.log("Map click");
-                            Bugfender.d("log", "Map click(Alarm ENABLED)");
+//                            Bugfender.d("log", "Map click(Alarm ENABLED)");
                             setSelectedCoord(latLng);
 
                             if (Build.VERSION.SDK_INT < 29) {
@@ -212,20 +212,20 @@ public class MapsFragment extends Fragment {
                             }
 
                             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                Bugfender.d("log", "Background location permission SUCCESS");
+//                                Bugfender.d("log", "Background location permission SUCCESS");
                             } else {
                                 if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
                                     //We show a dialog and ask for permission
                                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, BACKGROUND_LOCATION_ACCESS_REQUEST_CODE);
-                                    Bugfender.d("log", "Background location permission SUCCESS");
+//                                    Bugfender.d("log", "Background location permission SUCCESS");
                                 } else {
                                     Toast.makeText(getContext(), R.string.no_permission_toast, Toast.LENGTH_SHORT).show();
                                     Util.log("Permission failure");
-                                    Bugfender.d("log", "Permission failure");
+//                                    Bugfender.d("log", "Permission failure");
                                 }
                             }
                         } else {
-                            Bugfender.d("log", "Map click(Alarm DISABLED)");
+//                            Bugfender.d("log", "Map click(Alarm DISABLED)");
                             Toast.makeText(getContext(), R.string.map_disable_toast, Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -267,12 +267,12 @@ public class MapsFragment extends Fragment {
                                 editor.putBoolean("exit_checkBox", false);
                                 mMap.clear();
                                 Util.log("startStopButton disabled");
-                                Bugfender.d("log", "startStopButton disabled");
+//                                Bugfender.d("log", "startStopButton disabled");
                                 break;
 
                             case DISABLED:
                                 Util.log("startStopButton enabled");
-                                Bugfender.d("log", "startStopButton enabled");
+//                                Bugfender.d("log", "startStopButton enabled");
                                 if (selectedCoord != null) {
                                     if (!exitCheck.isChecked() && !enterCheck.isChecked()) {
                                         Toast.makeText(getContext(), R.string.empty_checkbox_toast, Toast.LENGTH_SHORT).show();
@@ -357,7 +357,7 @@ public class MapsFragment extends Fragment {
 
         switch (alarmMode) {
             case ENABLED:
-                Bugfender.d("log", "refreshMapState (ENABLED)");
+//                Bugfender.d("log", "refreshMapState (ENABLED)");
                 enterCheck.setClickable(false);
                 exitCheck.setClickable(false);
                 settingsView.setVisibility(View.INVISIBLE);
@@ -365,7 +365,7 @@ public class MapsFragment extends Fragment {
                 break;
 
             case DISABLED:
-                Bugfender.d("log", "refreshMapState (DISABLED)");
+//                Bugfender.d("log", "refreshMapState (DISABLED)");
                 enterCheck.setClickable(true);
                 exitCheck.setClickable(true);
                 settingsView.setVisibility(View.VISIBLE);
@@ -410,16 +410,16 @@ public class MapsFragment extends Fragment {
 
         if (enterCheck.isChecked() && exitCheck.isChecked()) {
             geofence = geofenceHelper.getGeofence(latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT);
-            Bugfender.d("log", "adding geofence (both checkbox)");
+//            Bugfender.d("log", "adding geofence (both checkbox)");
         } else if (enterCheck.isChecked() && !exitCheck.isChecked()) {
             geofence = geofenceHelper.getGeofence(latLng, radius, Geofence.GEOFENCE_TRANSITION_ENTER);
-            Bugfender.d("log", "adding geofence (on enter checkbox)");
+//            Bugfender.d("log", "adding geofence (on enter checkbox)");
         } else if (!enterCheck.isChecked() && exitCheck.isChecked()) {
             geofence = geofenceHelper.getGeofence(latLng, radius, Geofence.GEOFENCE_TRANSITION_EXIT);
-            Bugfender.d("log", "adding geofence (on exit checkbox)");
+//            Bugfender.d("log", "adding geofence (on exit checkbox)");
         } else {
             Toast.makeText(getContext(), R.string.empty_checkbox_toast, Toast.LENGTH_SHORT).show();
-            Bugfender.d("log", "adding geofence (empty checkbox)");
+//            Bugfender.d("log", "adding geofence (empty checkbox)");
             return;
         }
 
@@ -428,7 +428,7 @@ public class MapsFragment extends Fragment {
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Util.log("Check Location permission");
-            Bugfender.d("log", "Check Location permission");
+//            Bugfender.d("log", "Check Location permission");
             return;
         }
         geofencingClient.addGeofences(geofencingRequest, pendingIntent).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -441,7 +441,7 @@ public class MapsFragment extends Fragment {
             public void onFailure(@NonNull Exception e) {
                 String errorMessage = geofenceHelper.getErrorString(e);
                 Util.log("Geofence adding failure: " + errorMessage);
-                Bugfender.d("log", "Geofence adding failure: " + errorMessage);
+//                Bugfender.d("log", "Geofence adding failure: " + errorMessage);
             }
         });
     }
@@ -454,7 +454,7 @@ public class MapsFragment extends Fragment {
         circleOptions.fillColor(Color.argb(64, 255, 0, 0));
         circleOptions.strokeWidth(4);
         mMap.addCircle(circleOptions);
-        Bugfender.d("log", "add Circle");
+//        Bugfender.d("log", "add Circle");
     }
 
 }
